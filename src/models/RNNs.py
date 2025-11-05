@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 @tf.keras.utils.register_keras_serializable(package="MyLayers")
-class VanillaRNN(tf.keras.layers.Model):
+class VanillaRNN(tf.keras.Model):
     """
     Simple vanilla RNN implementation from scratch for text language modeling.
     Compatible with mystery dataset text modeling codebase.
@@ -14,8 +14,10 @@ class VanillaRNN(tf.keras.layers.Model):
         self.max_seq_length = seq_length
 
         # TODO: Initialize embedding layer for token embeddings
-        self.embedding = None
+        self.embedding = tf.keras.layers.Embedding(vocab_size, hidden_size)
         # TODO: Initialize RNN weight matrices using self.add_weight from the Keras API
+        self.add_weight(shape=(hidden_size, hidden_size), initializer="glorot_uniform", dtype=tf.float32, trainable=True, name="input weights")
+        self.add_weight(shape=(hidden_size, hidden_size), initializer="glorot_uniform", dtype=tf.float32, trainable=True, name="hidden weights")
         # TODO: Initialize output projection layer to project to vocabulary size
         self.output_projection = None
 

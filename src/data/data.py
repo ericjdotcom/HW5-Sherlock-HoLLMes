@@ -44,6 +44,11 @@ class TextTokenizer:
         # TODO: Convert indices to tokens using self.idx_to_token
         # TODO: Handle special tokens appropriately
         tokens = []
+        for index in indices:
+            if index == self.pad_token: continue
+            elif index == self.eos_token: continue
+            elif index == self.unk_token: tokens.append("unk")
+            else: tokens.append(self.vocab[index])
         
         # Join with spaces and fix punctuation spacing (provided for convenience and these are just for display)
         text = ' '.join(tokens)
@@ -69,6 +74,10 @@ class TextTokenizer:
         # TODO: Convert tokens to indices using self.token_to_idx
         # TODO: Handle out-of-vocabulary words with unknown token
         indices = []
+        for token in tokens:
+            if self.token_to_idx[token] == None:
+                indices.append(self.unk_token)
+            else: indices.append(self.token_to_idx[token])
         
         return indices
 
@@ -188,6 +197,14 @@ def create_sequences(tokens: List[int], seq_length: int) -> np.ndarray:
     """
     sequences = []
     # TODO: Create non-overlapping sequences from token list
+    if len(tokens) < seq_length + 1: return None
+    num_sequences = (len(tokens)-1)//seq_length
+
+    for i in range(num_sequences):
+        first = i*seq_length
+        last = first + seq_length + 1
+        sequence = tokens[first:last]
+        sequences.append(sequence)
     
     return np.array(sequences, dtype=np.int32)
 
@@ -205,10 +222,19 @@ def create_tf_datasets(train_tokens: List[int], test_tokens: List[int],
     Returns:
         Tuple of (train_dataset, test_dataset)
     """
+    buf_size = 100 # Mess around with this parameter
+
     # TODO: Create sequences using create_sequences
+    train_sequences = create_sequences(train_tokens, seq_length)
+    test_sequences = create_sequences(test_tokens, seq_length)
     # TODO: Convert to TensorFlow constants (tf.constant will be your friend here)
+    train_sequences = tf.constant(train_sequences)
+    test_sequences = tf.constant(test_sequences)
     # TODO: Create datasets with batching and shuffling (look up the documentation for tf.data.Dataset)
-    pass
+    train_dataset = tf.data.Dataset.from_tensor_slices(train_sequences).batch(batch_size, drop_remainder = True).shuffle(buf_size)
+    test_dataset = tf.data.Dataset.from_tensor_slices(test_sequences).batch(batch_size, drop_remainder = True).shuffle(buf_size)
+    
+    return (train_dataset, test_dataset)
 
 def prepare_data(pickle_path: str = 'mystery_data.pkl', seq_length: int = 256,
                 batch_size: int = 16, vocab_size: int = None) -> Tuple[tf.data.Dataset, tf.data.Dataset, TextTokenizer]:
