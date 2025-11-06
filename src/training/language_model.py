@@ -74,16 +74,36 @@ class TextSampler:
 
         # TODO: Sort logits in descending order and prepare batch indices
         sorted_logits = tf.nn.top_k(scaled_logits, scaled_logits.shape[1], sorted=True) # values, indices
+        # sorted_logits.values is of shape [batch_size, vocab_size]
+        # sorted_logits.indices is also of shape [batch_size, vocab_size]
 
         # TODO: Compute cumulative probabilities from sorted logits
-        
+        cum_probs = tf.cumsum(sorted_logits.values, axis=1) # sum along axis vocab_size, produces shape [batch_size, vocab_size]
 
         # TODO: Create mask for tokens where cumulative probability <= p
+        update_indices_list = []
+
+        for i in range(cum_probs.shape[0]): # iterate over examples in batch
+            passed_p = False
+            for j in range(cum_probs.shape[1]): # iterate over cum probs in example
+                if passed_p: # if the logit corresponding to this cum prob shouldn't be sampled anymore
+                    # find the index of this logit in scaled_logits and add it to update_indices_list
+                    indices = (i, sorted_logits.indices[i,j]) # find the indices of this logit in scaled_logits, [batch_size, vocab_size]
+                    update_indices_list.append(indices)
+                if j > p: # if the current cum prob is lower than the cum prob threshold
+                    passed_p = True
 
         # TODO: Apply mask to filter sorted logits
 
         # TODO: Map filtered logits back to original indices and sample
-        pass
+
+        update_indices = tf.stack(update_indices_list) # stack the list into a tensor
+
+        neg_inf = tf.cast(tf.fill(len(update_indices_list), -10000000), dtype=tf.float32)
+
+        filtered_logits = tf.tensor_scatter_nd_update(scaled_logits, update_indices, neg_inf) # at all indices, set the logit to -inf
+
+        return tf.random.categorical(filtered_logits, num_samples=1)
 
     @staticmethod
     def sample_categorical(logits: tf.Tensor, temperature: float = 1.0) -> tf.Tensor:
