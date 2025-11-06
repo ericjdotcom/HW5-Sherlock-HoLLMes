@@ -24,14 +24,35 @@ class TextSampler:
             Sampled token indices [batch_size, 1]
         """
         # TODO: Apply temperature scaling
+        if temperature <= 0:
+            raise ValueError("Temperature must be positive.")
+        scaled_logits = logits / temperature
 
         # TODO: Limit to top-k from the logits using tf.nn.top_k
+        top_k = tf.nn.top_k(scaled_logits, k, sorted=True) # values, indices
+        min_top_ks = top_k.values[:,-1] # list of minimum top k value for each input in batch
 
         # TODO: Filter logits to only keep top-k tokens, set others to -inf
-        # NOTE: Create a mask based on the minimum top-k value threshold
+        # filtered_logits = tf.zeros(shape=scaled_logits.shape, dtype=tf.float32)
+        # for num_input_in_batch in range(scaled_logits.shape[0]):
+        #     filtered_logits[num_input_in_batch, :] = tf.where(scaled_logits>=min_top_ks[num_input_in_batch], scaled_logits, neg_inf)
+
+        # scaled_logits is of shape [batch_size, vocab_size]. For each batch, we need to set all logits less than the value of the relevant batch 
+        # index in min_top_ks to neg_inf.
+        update_indices_list = []
+        for i in range(scaled_logits.shape[0]): # iterate over batch_size of scaled_logits
+            for j in range(scaled_logits.shape[1]): # iterate over vocab_size of scaled_logits
+                if scaled_logits[i,j] < min_top_ks[i]: # if the logit is less than the minimum top k value
+                    update_indices_list.append(tf.constant([i,j], dtype=tf.int32)) # add the indices of the logit in scaled_logits to a list
+
+        update_indices = tf.stack(update_indices_list) # stack the list into a tensor
+
+        neg_inf = tf.cast(tf.fill(len(update_indices_list), -10000000), dtype=tf.float32)
+
+        filtered_logits = tf.tensor_scatter_nd_update(scaled_logits, update_indices, neg_inf) # at all indices, set the logit to -inf
 
         # TODO: Sample from the filtered distribution
-        pass
+        return tf.random.categorical(filtered_logits, num_samples=1)
 
     @staticmethod
     def sample_top_p(logits: tf.Tensor, p: float, temperature: float = 1.0) -> tf.Tensor:
@@ -47,10 +68,15 @@ class TextSampler:
             Sampled token indices [batch_size, 1]
         """
         # TODO: Apply temperature scaling
+        if temperature <= 0:
+            raise ValueError("Temperature must be positive.")
+        scaled_logits = logits / temperature
 
         # TODO: Sort logits in descending order and prepare batch indices
+        sorted_logits = tf.nn.top_k(scaled_logits, scaled_logits.shape[1], sorted=True) # values, indices
 
         # TODO: Compute cumulative probabilities from sorted logits
+        
 
         # TODO: Create mask for tokens where cumulative probability <= p
 
