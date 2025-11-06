@@ -27,11 +27,18 @@ class AttentionMatrix(keras.layers.Layer):
         head_size = tf.cast(tf.shape(K)[-1], tf.float32)
 
         # TODO: Compute scaled dot-product attention scores and normalize
+        # Matrix multiplication of query and key vectors, and then divide by the square root of d_k
+        product = tf.matmul(Q, K, transpose_b = True)/tf.math.sqrt(head_size) # [batch_size, embed_size (q), embed_size (k)]
 
         # TODO: If use_causal_mask is True, apply causal mask to prevent attending to future tokens
+        if self.use_causal_mask:
+            neg_inf = tf.constant(-1000000, dtype=tf.float32)
+            # TODO: FINISH THIS!
+
         # TODO: Apply softmax to get attention weights
+        normalized_product = tf.nn.softmax(product, axis=0) # perform softmax over all q*k for each query
         
-        return NotImplementedError
+        return normalized_product
 
     def get_config(self):
         config = super().get_config()
@@ -47,8 +54,17 @@ class AttentionHead(keras.layers.Layer):
         self.output_size = output_size
         self.use_causal_mask = use_causal_mask
 
+        self.d_k = 128 # ARBITRARY NUMBER!
+
         # TODO: Initialize linear projections for K, Q, V
+        self.w_k = self.add_weight(shape=(self.input_size, self.d_k), initializer="glorot_uniform", 
+                                             dtype=tf.float32, trainable=True, name="key matrix")
+        self.w_q = self.add_weight(shape=(self.input_size, self.d_k), initializer="glorot_uniform", 
+                                             dtype=tf.float32, trainable=True, name="query matrix")
+        self.w_v = self.add_weight(shape=(self.input_size, self.input_size), initializer="glorot_uniform", 
+                                             dtype=tf.float32, trainable=True, name="value matrix") # or use keras Dense layers?
         # TODO: Initialize attention matrix computation (pass in use_causal_mask)
+        self.attention_matrix = AttentionMatrix(use_causal_mask)
 
     def call(self, inputs_for_keys, inputs_for_values, inputs_for_queries):
         """
@@ -68,10 +84,15 @@ class AttentionHead(keras.layers.Layer):
         inputs_for_queries = tf.cast(inputs_for_queries, tf.float32)
 
         # TODO: Apply linear transformations to get K, Q, V
+        K = tf.matmul(inputs_for_keys, self.w_k)
+        Q = tf.matmul(inputs_for_queries, self.w_q)
+        V = tf.matmul(inputs_for_values, self.w_v)
         # TODO: Compute attention weights
+        attention_matrix = self.attention_matrix([K,Q])
         # TODO: Apply attention to values
+        attended_values = tf.matmul(attention_matrix, V)
 
-        return NotImplementedError
+        return attended_values # TODO: PROBLEM --- output shape of attention head is wrong!
 
     def get_config(self):
         config = super().get_config()
@@ -96,7 +117,12 @@ class MultiHeadAttention(keras.layers.Layer):
         assert embed_size % num_heads == 0, "embed_size must be divisible by num_heads"
 
         # TODO: Create attention heads (pass in use_causal_mask)
+        self.attention_heads = []
+        for i in range(num_heads):
+            head = AttentionHead(self.embed_size, self.embed_size, self.use_causal_mask)
+            self.attention_heads.append(head)
         # TODO: Initialize output projection (embed_size)
+        self.output_projection = tf.keras.layers.Dense(self.embed_size)
 
     def call(self, inputs_for_keys, inputs_for_values, inputs_for_queries):
         """
@@ -116,8 +142,14 @@ class MultiHeadAttention(keras.layers.Layer):
         inputs_for_queries = tf.cast(inputs_for_queries, tf.float32)
 
         # TODO: Apply each attention head
+        outputs = []
+        for head in self.attention_heads:
+            head_output = head(inputs_for_keys, inputs_for_values, inputs_for_queries)
+            outputs.append(head_output)
         # TODO: Concatenate head outputs
+        concatenated_output = tf.concat(outputs, axis=0)
         # TODO: Apply output projection
+        return self.output_projection(concatenated_output)
 
         return NotImplementedError
 
@@ -187,7 +219,10 @@ class PositionalEncoding(tf.keras.layers.Layer):
         # TODO: Extract appropriate slice of positional encodings
         # HINT: self.positional_encoding has shape [1, max_seq_length, d_model]
 
-        return NotImplementedError
+        pos_encoding_slice = tf.constant(self.positional_encoding[:,:seq_length,:])
+        inputs_with_encoding = inputs + pos_encoding_slice
+
+        return inputs_with_encoding
 
     def get_config(self):
         config = super().get_config()
@@ -210,14 +245,19 @@ class LanguageTransformerBlock(keras.layers.Layer):
         self.use_causal_mask = True  # Always use causal mask for language modeling
 
         # TODO: Initialize self-attention
+        self.self_attention = MultiHeadAttention(self.embed_size, self.num_heads, self.use_causal_mask)
 
         # TODO: Initialize feed-forward network (2 layers)
+        self.dense1 = tf.keras.layers.Dense(self.ff_hidden_size, activation="softmax")
+        self.dense2 = tf.keras.layers.Dense(self.embed_size)
         # First layer: embed_size -> ff_hidden_size with activation
         # Second layer: ff_hidden_size -> embed_size
 
         # TODO: Initialize layer normalization layers
+        self.layer_norm = tf.keras.layers.LayerNormalization()
 
         # TODO: Initialize dropout layers
+        self.dropout = tf.keras.layers.Dropout(dropout_rate)
 
     def call(self, inputs, training=None):
         """
@@ -234,10 +274,18 @@ class LanguageTransformerBlock(keras.layers.Layer):
         inputs = tf.cast(inputs, tf.float32)
 
         # TODO: Self-attention with residual connection and layer norm
+        inputs = self.layer_norm(inputs)
+        updates = self.self_attention(inputs, inputs, inputs)
+        outputs = inputs + updates
+        if training: outputs = self.dropout(outputs)
 
         # TODO: Feed-forward with residual connection and layer norm
+        outputs = outputs + self.dense1(self.layer_norm(outputs))
+        if training: outputs = self.dropout(outputs)
+        outputs = outputs + self.dense2(self.layer_norm(outputs))
+        outputs = self.layer_norm(outputs)
 
-        return NotImplementedError
+        return outputs
 
     def get_config(self):
         config = super().get_config()
