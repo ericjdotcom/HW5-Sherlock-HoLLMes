@@ -54,15 +54,17 @@ class AttentionHead(keras.layers.Layer):
         self.output_size = output_size
         self.use_causal_mask = use_causal_mask
 
-        self.d_k = 128 # ARBITRARY NUMBER!
-
         # TODO: Initialize linear projections for K, Q, V
-        self.w_k = self.add_weight(shape=(self.input_size, self.d_k), initializer="glorot_uniform", 
+        self.w_k = self.add_weight(shape=(self.input_size, self.output_size), initializer="glorot_uniform", 
                                              dtype=tf.float32, trainable=True, name="key matrix")
-        self.w_q = self.add_weight(shape=(self.input_size, self.d_k), initializer="glorot_uniform", 
+        self.w_q = self.add_weight(shape=(self.input_size, self.output_size), initializer="glorot_uniform", 
                                              dtype=tf.float32, trainable=True, name="query matrix")
-        self.w_v = self.add_weight(shape=(self.input_size, self.input_size), initializer="glorot_uniform", 
+        self.w_v = self.add_weight(shape=(self.input_size, self.output_size), initializer="glorot_uniform", 
                                              dtype=tf.float32, trainable=True, name="value matrix") # or use keras Dense layers?
+
+        # self.w_k = tf.layers.keras.Dense(self.d_k)
+        # self.w_q = tf.layers.keras.Dense(self.d_k)
+        # self.w_v = tf.layers.keras.Dense(self.input_size)
         # TODO: Initialize attention matrix computation (pass in use_causal_mask)
         self.attention_matrix = AttentionMatrix(use_causal_mask)
 
@@ -84,6 +86,9 @@ class AttentionHead(keras.layers.Layer):
         inputs_for_queries = tf.cast(inputs_for_queries, tf.float32)
 
         # TODO: Apply linear transformations to get K, Q, V
+        # K = self.w_k(inputs_for_keys)
+        # Q = self.w_q(inputs_for_queries)
+        # V = self.w_v(inputs_for_values)
         K = tf.matmul(inputs_for_keys, self.w_k)
         Q = tf.matmul(inputs_for_queries, self.w_q)
         V = tf.matmul(inputs_for_values, self.w_v)
@@ -147,11 +152,9 @@ class MultiHeadAttention(keras.layers.Layer):
             head_output = head(inputs_for_keys, inputs_for_values, inputs_for_queries)
             outputs.append(head_output)
         # TODO: Concatenate head outputs
-        concatenated_output = tf.concat(outputs, axis=0)
+        concatenated_output = tf.concat(outputs, axis=2)
         # TODO: Apply output projection
         return self.output_projection(concatenated_output)
-
-        return NotImplementedError
 
     def get_config(self):
         config = super().get_config()
@@ -254,7 +257,10 @@ class LanguageTransformerBlock(keras.layers.Layer):
         # Second layer: ff_hidden_size -> embed_size
 
         # TODO: Initialize layer normalization layers
-        self.layer_norm = tf.keras.layers.LayerNormalization()
+        self.layer_norm1 = tf.keras.layers.LayerNormalization()
+        self.layer_norm2 = tf.keras.layers.LayerNormalization()
+        self.layer_norm3 = tf.keras.layers.LayerNormalization()
+        self.layer_norm4 = tf.keras.layers.LayerNormalization()
 
         # TODO: Initialize dropout layers
         self.dropout = tf.keras.layers.Dropout(dropout_rate)
@@ -274,16 +280,16 @@ class LanguageTransformerBlock(keras.layers.Layer):
         inputs = tf.cast(inputs, tf.float32)
 
         # TODO: Self-attention with residual connection and layer norm
-        inputs = self.layer_norm(inputs)
+        inputs = self.layer_norm1(inputs)
         updates = self.self_attention(inputs, inputs, inputs)
         outputs = inputs + updates
         if training: outputs = self.dropout(outputs)
 
         # TODO: Feed-forward with residual connection and layer norm
-        outputs = outputs + self.dense1(self.layer_norm(outputs))
+        outputs = self.dense1(self.layer_norm2(outputs))
         if training: outputs = self.dropout(outputs)
-        outputs = outputs + self.dense2(self.layer_norm(outputs))
-        outputs = self.layer_norm(outputs)
+        outputs = self.dense2(self.layer_norm3(outputs))
+        outputs = self.layer_norm4(outputs)
 
         return outputs
 
@@ -318,7 +324,7 @@ class TransformerLanguageModel(keras.Model):
         self.pad_token_id = pad_token_id
 
         # TODO: Initialize token embeddings
-        self.embeddings = tf.keras.layers.Embedding(self.vocab_size, self.d_model)
+        self.embedding = tf.keras.layers.Embedding(self.vocab_size, self.d_model)
 
         # TODO: Create positional encodings (d_model, max_seq_length)
         self.pos_encoding = PositionalEncoding(self.d_model, self.max_seq_length)
@@ -354,7 +360,7 @@ class TransformerLanguageModel(keras.Model):
             Logits over vocabulary [batch_size, seq_length, vocab_size]
         """
         # 1. Get token embeddings and scale by sqrt(d_model)
-        embeddings = self.token_embedding(inputs)  # [batch_size, seq_length, d_model]
+        embeddings = self.embedding(inputs)  # [batch_size, seq_length, d_model]
         embeddings = embeddings * tf.math.sqrt(tf.cast(self.d_model, tf.float32))
 
         # TODO: Add positional encodings (remember to slice to seq_length)
