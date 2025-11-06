@@ -318,18 +318,28 @@ class TransformerLanguageModel(keras.Model):
         self.pad_token_id = pad_token_id
 
         # TODO: Initialize token embeddings
+        self.embeddings = tf.keras.layers.Embedding(self.vocab_size, self.d_model)
 
         # TODO: Create positional encodings (d_model, max_seq_length)
+        self.pos_encoding = PositionalEncoding(self.d_model, self.max_seq_length)
 
         # TODO: Initialize embedding dropout
+        self.embedding_dropout = tf.keras.layers.Dropout(self.dropout_rate)
 
         # TODO: Create transformer blocks (n_layers of LanguageTransformerBlock)
+        self.transformer_blocks = []
+        for n in range(n_layers):
+            block = LanguageTransformerBlock(self.d_model, self.n_heads, self.d_ff, self.dropout_rate)
+            self.transformer_blocks.append(block)
 
         # TODO: Initialize final layer normalization
+        self.final_layer_norm = tf.keras.layers.LayerNormalization()
 
         # TODO: Initialize transformer dropout
+        self.transformer_dropout = tf.keras.layers.Dropout(self.dropout_rate)
 
         # TODO: Initialize output projection to vocabulary
+        self.output_projection = tf.keras.layers.Dense(self.vocab_size)
 
 
     def call(self, inputs, training=None):
@@ -348,16 +358,22 @@ class TransformerLanguageModel(keras.Model):
         embeddings = embeddings * tf.math.sqrt(tf.cast(self.d_model, tf.float32))
 
         # TODO: Add positional encodings (remember to slice to seq_length)
+        x = self.pos_encoding(embeddings)
 
         # TODO: Apply dropout to embeddings
+        x = self.embedding_dropout(x)
 
         # TODO: Pass embeddings through transformer blocks using a loop
+        for block in self.transformer_blocks:
+            x = block(x, training)
 
         # TODO: Apply final layer normalization
+        x = self.final_layer_norm(x)
 
         # TODO: Project to vocabulary and return logits
+        output = self.output_projection(x)
         
-        return NotImplementedError
+        return output
 
     def get_config(self):
         """Get model configuration for saving."""
