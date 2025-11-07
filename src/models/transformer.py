@@ -31,17 +31,12 @@ class AttentionMatrix(keras.layers.Layer):
         product = tf.matmul(Q, K, transpose_b = True)/tf.math.sqrt(head_size) # [batch_size, embed_size (q), embed_size (k)]
 
         # TODO: If use_causal_mask is True, apply causal mask to prevent attending to future tokens
-        # if self.use_causal_mask:
-        #     mask = tf.linalg.band_part(tf.ones(shape=product.shape),-1,0)
-        #     product = tf.where(mask == 1, product, tf.fill(tf.shape(product), float('-inf')))
         if self.use_causal_mask:
-            seq_length = tf.shape(product)[-1]
-            mask = tf.linalg.band_part(tf.ones((seq_length, seq_length)), -1, 0)
-            mask = (1.0 - mask) * -1e9
-            product += mask
+            mask = tf.linalg.band_part(tf.ones(shape=product.shape),-1,0)
+            product = tf.where(mask == 1, product, tf.fill(tf.shape(product), float('-inf')))
 
         # TODO: Apply softmax to get attention weights
-        normalized_product = tf.nn.softmax(product, axis=0) # perform softmax over all q*k for each query
+        normalized_product = tf.nn.softmax(product, axis=-1) # perform softmax over all q*k for each query
         
         return normalized_product
 
