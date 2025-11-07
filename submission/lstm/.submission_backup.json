@@ -1,0 +1,56 @@
+{
+  "chain_seed": "1f70044eeccec15fd62ee707082fa14311e335fef3f38dce645cfae2df7f6568",
+  "training_log": [
+    {
+      "epoch": 1,
+      "train_loss": 5.899608135223389,
+      "val_loss": 5.872288227081299,
+      "perplexity": 355.06051050657493,
+      "logged_at": "2025-11-07T00:06:41.087948",
+      "elapsed_time": 1249.070729970932,
+      "previous_hash": "1f70044eeccec15fd62ee707082fa14311e335fef3f38dce645cfae2df7f6568",
+      "epoch_hash": "b64ed60cbaf0406613de4efd5b04c19ce011e33be416f2f21cae98e754dbb33f"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 5.789809703826904,
+      "val_loss": 5.870724678039551,
+      "perplexity": 354.50578976516147,
+      "logged_at": "2025-11-07T00:27:58.051231",
+      "elapsed_time": 2526.0345430374146,
+      "previous_hash": "b64ed60cbaf0406613de4efd5b04c19ce011e33be416f2f21cae98e754dbb33f",
+      "epoch_hash": "779e69aae5eaa4186c4debddfe979a595450420184456a741174bdca279e4cb1"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 5.782361030578613,
+      "val_loss": 5.872189044952393,
+      "perplexity": 355.02529659557655,
+      "logged_at": "2025-11-07T00:49:14.122792",
+      "elapsed_time": 3802.1054861545563,
+      "previous_hash": "779e69aae5eaa4186c4debddfe979a595450420184456a741174bdca279e4cb1",
+      "epoch_hash": "fcd09abc7e1c2b9aa9c78e00fc4c34cbf0c74a4baf7f209786343829be6f6dd7"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 5.775452613830566,
+      "val_loss": 5.86264705657959,
+      "perplexity": 351.6537605038661,
+      "logged_at": "2025-11-07T01:11:03.111164",
+      "elapsed_time": 5111.09378194809,
+      "previous_hash": "fcd09abc7e1c2b9aa9c78e00fc4c34cbf0c74a4baf7f209786343829be6f6dd7",
+      "epoch_hash": "e6262c598ecc74a96ad04fa00e798316d3e3fb0cfd9dff2f7458b4f10336e687"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 5.7623138427734375,
+      "val_loss": 5.8554253578186035,
+      "perplexity": 349.12337083058407,
+      "logged_at": "2025-11-07T01:32:36.811726",
+      "elapsed_time": 6404.794376134872,
+      "previous_hash": "e6262c598ecc74a96ad04fa00e798316d3e3fb0cfd9dff2f7458b4f10336e687",
+      "epoch_hash": "be45bd8613315f32ed81b23d991d2811b9daac38ae46bef84848d8a18e815606"
+    }
+  ],
+  "status": "in_progress"
+}
