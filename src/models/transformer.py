@@ -222,7 +222,7 @@ class PositionalEncoding(tf.keras.layers.Layer):
         # TODO: Extract appropriate slice of positional encodings
         # HINT: self.positional_encoding has shape [1, max_seq_length, d_model]
 
-        pos_encoding_slice = tf.constant(self.positional_encoding[:,:seq_length,:])
+        pos_encoding_slice = self.positional_encoding[:,:seq_length,:]
         inputs_with_encoding = inputs + pos_encoding_slice
 
         return inputs_with_encoding
@@ -287,8 +287,8 @@ class LanguageTransformerBlock(keras.layers.Layer):
 
         # TODO: Feed-forward with residual connection and layer norm
         outputs = self.dense1(self.layer_norm2(outputs))
-        if training: outputs = self.dropout(outputs)
         outputs = self.dense2(self.layer_norm3(outputs))
+        if training: outputs = self.dropout(outputs)
         outputs = self.layer_norm4(outputs)
 
         return outputs
@@ -324,28 +324,28 @@ class TransformerLanguageModel(keras.Model):
         self.pad_token_id = pad_token_id
 
         # TODO: Initialize token embeddings
-        self.embedding = tf.keras.layers.Embedding(self.vocab_size, self.d_model)
+        self.embedding = tf.keras.layers.Embedding(vocab_size, d_model)
 
         # TODO: Create positional encodings (d_model, max_seq_length)
-        self.pos_encoding = PositionalEncoding(self.d_model, self.max_seq_length)
+        self.pos_encoding = PositionalEncoding(d_model, max_seq_length)
 
         # TODO: Initialize embedding dropout
-        self.embedding_dropout = tf.keras.layers.Dropout(self.dropout_rate)
+        self.embedding_dropout = tf.keras.layers.Dropout(dropout_rate)
 
         # TODO: Create transformer blocks (n_layers of LanguageTransformerBlock)
         self.transformer_blocks = []
         for n in range(n_layers):
-            block = LanguageTransformerBlock(self.d_model, self.n_heads, self.d_ff, self.dropout_rate)
+            block = LanguageTransformerBlock(d_model, n_heads, d_ff, dropout_rate)
             self.transformer_blocks.append(block)
 
         # TODO: Initialize final layer normalization
         self.final_layer_norm = tf.keras.layers.LayerNormalization()
 
         # TODO: Initialize transformer dropout
-        self.transformer_dropout = tf.keras.layers.Dropout(self.dropout_rate)
+        self.transformer_dropout = tf.keras.layers.Dropout(dropout_rate)
 
         # TODO: Initialize output projection to vocabulary
-        self.output_projection = tf.keras.layers.Dense(self.vocab_size)
+        self.output_projection = tf.keras.layers.Dense(vocab_size)
 
 
     def call(self, inputs, training=None):
@@ -367,7 +367,7 @@ class TransformerLanguageModel(keras.Model):
         x = self.pos_encoding(embeddings)
 
         # TODO: Apply dropout to embeddings
-        x = self.embedding_dropout(x)
+        if training: x = self.embedding_dropout(x)
 
         # TODO: Pass embeddings through transformer blocks using a loop
         for block in self.transformer_blocks:
