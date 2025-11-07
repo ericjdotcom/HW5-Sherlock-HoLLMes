@@ -50,7 +50,7 @@ class VanillaRNN(tf.keras.Model):
         for t in range(seq_length):
             x_t = embedded[:, t, :]  # [batch_size, hidden_size]
             # TODO: Compute RNN hidden state update using the RNN equation(s)
-            h = tf.nn.tanh(tf.linalg.matmul(x_t, self.w_x) + tf.linalg.matmul(h, self.w_h) + self.b_h)
+            h = tf.nn.tanh(tf.matmul(x_t, self.w_x) + tf.matmul(h, self.w_h) + self.b_h)
             outputs.append(h)
 
         # 4. Finally, we stack the outputs and project to vocabulary

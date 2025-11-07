@@ -45,8 +45,8 @@ def train(model, train_dataset, test_dataset, epochs=5, learning_rate=1e-3,
     """
 
     def get_input_target_seqs(sequence):
-        input = sequence[0:-1]
-        target = sequence[1:]
+        input = sequence[:,:-1]
+        target = sequence[:,1:]
         return input, target
 
     # Ensure checkpoint directory exists otherwise create it

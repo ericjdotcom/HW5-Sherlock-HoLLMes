@@ -222,17 +222,17 @@ def create_tf_datasets(train_tokens: List[int], test_tokens: List[int],
     Returns:
         Tuple of (train_dataset, test_dataset)
     """
-    buf_size = 100 # Mess around with this parameter
+    buf_size = 1024 # Mess around with this parameter
 
     # TODO: Create sequences using create_sequences
     train_sequences = create_sequences(train_tokens, seq_length)
     test_sequences = create_sequences(test_tokens, seq_length)
     # TODO: Convert to TensorFlow constants (tf.constant will be your friend here)
-    train_sequences = tf.constant(train_sequences)
-    test_sequences = tf.constant(test_sequences)
+    train_sequences = tf.constant(train_sequences, dtype=tf.int32)
+    test_sequences = tf.constant(test_sequences, dtype=tf.int32)
     # TODO: Create datasets with batching and shuffling (look up the documentation for tf.data.Dataset)
-    train_dataset = tf.data.Dataset.from_tensor_slices(train_sequences).batch(batch_size, drop_remainder = True).shuffle(buf_size)
-    test_dataset = tf.data.Dataset.from_tensor_slices(test_sequences).batch(batch_size, drop_remainder = True).shuffle(buf_size)
+    train_dataset = tf.data.Dataset.from_tensor_slices(train_sequences).shuffle(buf_size).batch(batch_size, drop_remainder = True)
+    test_dataset = tf.data.Dataset.from_tensor_slices(test_sequences).batch(batch_size, drop_remainder = True)
     
     return (train_dataset, test_dataset)
 
