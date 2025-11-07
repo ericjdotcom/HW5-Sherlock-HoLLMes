@@ -55,8 +55,8 @@ def train(model, train_dataset, test_dataset, epochs=5, learning_rate=1e-3,
     optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
     loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     # TODO: Set up TensorFlow checkpointing with Checkpoint and CheckpointManager
-    checkpoint = tf.train.Checkpoint(model)
-    checkpoint_manager = tf.train.CheckpointManager(checkpoint, checkpoint_dir, max_to_keep=3)
+    checkpoint = tf.train.Checkpoint(model=model, optimizer=optimizer)
+    checkpoint_manager = tf.train.CheckpointManager(checkpoint, directory=checkpoint_dir, max_to_keep=3)
     
     # Handle checkpoint restoration for continue training
     start_epoch = 1

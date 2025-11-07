@@ -14,7 +14,7 @@
   "use_lr_schedule": false,
   "continue_training": false,
   "submission_base_dir": "submission",
-  "checkpoint_dir": "checkpoints/vanilla_rnn/20251106_204842",
+  "checkpoint_dir": "checkpoints/vanilla_rnn/20251106_225845",
   "logs_dir": "logs",
   "model_save_path": "final_model",
   "generation_length": 100,
