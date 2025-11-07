@@ -1,12 +1,12 @@
 {
   "metadata": {
-    "timestamp": "20251106_204842",
+    "timestamp": "20251106_225845",
     "model_type": "vanilla_rnn",
     "submission_version": "3.0",
-    "total_training_time_seconds": 768.2457120418549,
-    "chain_seed": "18b175a9207d63bf6e77b38432ab600dc5dacdf568f661bc616c5aa49055c31e",
-    "final_hash": "5b1a543e3b33cfdc9267f13b7a73450a13300c2d35928b0482928745ea23b679",
-    "weights_hash": "c27a2e9c63a1c0d6323c1b0076027156d26e9a1f441acd5de0ab434c5dbc9dcd"
+    "total_training_time_seconds": 814.129145860672,
+    "chain_seed": "b4c20751876bfde7fc45829809b4bea2a87050c912f3f696d45cd5ce3ec97537",
+    "final_hash": "39e41f79a92e25556590ab2528a0277d8db1fa9a37c0d480cf963aed140ad7c2",
+    "weights_hash": "5f47ccb0fe4fd0fce555920e632d314d24642deab21896aaabf71a109a5e958d"
   },
   "model_params": {
     "vocab_size": 3000,
@@ -19,9 +19,9 @@
     "epochs": 2
   },
   "final_metrics": {
-    "train_loss": 5.524651050567627,
-    "val_loss": 5.6341376304626465,
-    "perplexity": 279.8175071387978
+    "train_loss": 5.528772354125977,
+    "val_loss": 5.632721900939941,
+    "perplexity": 279.42164151841365
   },
   "training_history": {
     "epochs": [
@@ -29,32 +29,32 @@
       2
     ],
     "train_loss": [
-      5.563724994659424,
-      5.524651050567627
+      5.563530921936035,
+      5.528772354125977
     ],
     "val_loss": [
-      5.624136447906494,
-      5.6341376304626465
+      5.631962776184082,
+      5.632721900939941
     ],
     "perplexity": [
-      277.03294881566165,
-      279.8175071387978
+      279.2096061238552,
+      279.42164151841365
     ],
     "logged_at": [
-      "2025-11-06T20:56:08.718722",
-      "2025-11-06T21:02:38.483936"
+      "2025-11-06T23:05:19.558842",
+      "2025-11-06T23:12:20.961599"
     ],
     "elapsed_time": [
-      377.8593490123749,
-      767.623055934906
+      392.00770115852356,
+      813.4105870723724
     ],
     "epoch_hashes": [
-      "926c48a3d50ab0c1511dad79fc8bb2f6d42d29e12573a660b2b94521ef34015b",
-      "5b1a543e3b33cfdc9267f13b7a73450a13300c2d35928b0482928745ea23b679"
+      "9ea68d2462f3f966423e5fb16545ce909d943c031a46eb5b67850c6c184abe2f",
+      "39e41f79a92e25556590ab2528a0277d8db1fa9a37c0d480cf963aed140ad7c2"
     ],
     "previous_hashes": [
-      "18b175a9207d63bf6e77b38432ab600dc5dacdf568f661bc616c5aa49055c31e",
-      "926c48a3d50ab0c1511dad79fc8bb2f6d42d29e12573a660b2b94521ef34015b"
+      "b4c20751876bfde7fc45829809b4bea2a87050c912f3f696d45cd5ce3ec97537",
+      "9ea68d2462f3f966423e5fb16545ce909d943c031a46eb5b67850c6c184abe2f"
     ]
   }
 }
