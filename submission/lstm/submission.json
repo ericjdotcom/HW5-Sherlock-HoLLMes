@@ -1,12 +1,12 @@
 {
   "metadata": {
-    "timestamp": "20251107_073624",
+    "timestamp": "20251107_155739",
     "model_type": "lstm",
     "submission_version": "3.0",
-    "total_training_time_seconds": 5184.719663858414,
-    "chain_seed": "f98054068020247c56683eda901f8dfbf6f90eab7153533b9faac57e461d42ef",
-    "final_hash": "3568902b4deec43fc35f909472b27b8d0ffe9ff5c6fc4b550aea0afa50d9244a",
-    "weights_hash": "7efebbbc6ee130299cc2e454da71a9444dbdb6706a09b62b894748401f9ea686"
+    "total_training_time_seconds": 3152.304279088974,
+    "chain_seed": "deba061dfa550d6160ea99da0371890689c2d303cccfbc66a1ae59e4b4afb2b6",
+    "final_hash": "384fa6d9a18c8bffc7adfe3dd2a43208123edf60ba56880a161c94dc5a623d5b",
+    "weights_hash": "8ed13eaf7a89f982fff3a632341d8978eee92e16fb77ed84bdaf7044040da6e8"
   },
   "model_params": {
     "vocab_size": 5000,
@@ -19,9 +19,9 @@
     "epochs": 3
   },
   "final_metrics": {
-    "train_loss": 5.701689720153809,
-    "val_loss": 5.8545756340026855,
-    "perplexity": 348.826838390876
+    "train_loss": 3.9681622982025146,
+    "val_loss": 4.282121658325195,
+    "perplexity": 72.39387224612065
   },
   "training_history": {
     "epochs": [
@@ -30,39 +30,39 @@
       3
     ],
     "train_loss": [
-      5.808793067932129,
-      5.729335308074951,
-      5.701689720153809
+      4.752569675445557,
+      4.136834621429443,
+      3.9681622982025146
     ],
     "val_loss": [
-      5.876888751983643,
-      5.858304500579834,
-      5.8545756340026855
+      4.564763069152832,
+      4.373604774475098,
+      4.282121658325195
     ],
     "perplexity": [
-      356.6977383931945,
-      350.1299952688551,
-      348.826838390876
+      96.03983652082997,
+      79.32908034542761,
+      72.39387224612065
     ],
     "logged_at": [
-      "2025-11-07T07:52:17.701987",
-      "2025-11-07T08:08:48.590256",
-      "2025-11-07T09:02:50.516746"
+      "2025-11-07T16:14:59.090332",
+      "2025-11-07T16:32:29.261048",
+      "2025-11-07T16:50:04.120169"
     ],
     "elapsed_time": [
-      950.961758852005,
-      1941.8519387245178,
-      5183.778970718384
+      1038.071051120758,
+      2088.2415459156036,
+      3143.10075712204
     ],
     "epoch_hashes": [
-      "139b5e5b63a46a91a9c7957d52dba4fb96d1a9227b8894e0e43dcbe4321af043",
-      "d7e679dc429dffa4e61bbe2c2de31024c107a88f6cb66a0df6ab05d98da3dfaf",
-      "3568902b4deec43fc35f909472b27b8d0ffe9ff5c6fc4b550aea0afa50d9244a"
+      "5ff7cdaef76dafd92470f2c610e961ad946be8d33bfec07d3410c0da32f7c345",
+      "51a9b2e9a325858bf69c6c58d93552fd8b6546ad8b0fbc63caa5de4e219893c6",
+      "384fa6d9a18c8bffc7adfe3dd2a43208123edf60ba56880a161c94dc5a623d5b"
     ],
     "previous_hashes": [
-      "f98054068020247c56683eda901f8dfbf6f90eab7153533b9faac57e461d42ef",
-      "139b5e5b63a46a91a9c7957d52dba4fb96d1a9227b8894e0e43dcbe4321af043",
-      "d7e679dc429dffa4e61bbe2c2de31024c107a88f6cb66a0df6ab05d98da3dfaf"
+      "deba061dfa550d6160ea99da0371890689c2d303cccfbc66a1ae59e4b4afb2b6",
+      "5ff7cdaef76dafd92470f2c610e961ad946be8d33bfec07d3410c0da32f7c345",
+      "51a9b2e9a325858bf69c6c58d93552fd8b6546ad8b0fbc63caa5de4e219893c6"
     ]
   }
 }

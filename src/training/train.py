@@ -88,9 +88,6 @@ def train(model, train_dataset, test_dataset, epochs=5, learning_rate=1e-3,
 
             with tf.GradientTape() as tape:
                 logits = model(input)
-                batch_size = logits.shape[0]
-                seq_len = logits.shape[1]
-                vocab_size = logits.shape[2]
                 loss = tf.reduce_mean(loss_fn(y_true=tf.reshape(target, shape=(logits.shape[0] * logits.shape[1])), 
                                               y_pred=tf.reshape(logits, shape=(logits.shape[0] * logits.shape[1], logits.shape[2]))))
                 # VERIFY THAT THE tf.reshape() ABOVE WORKS!
