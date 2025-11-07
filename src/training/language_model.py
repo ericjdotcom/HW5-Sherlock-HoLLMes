@@ -46,7 +46,7 @@ class TextSampler:
                 if scaled_logits[i,j] < min_top_ks[i]: # if the logit is less than the minimum top k value
                     update_indices_list.append(tf.constant([i,j], dtype=tf.int32)) # add the indices of the logit in scaled_logits to a list
 
-        update_indices = tf.stack(update_indices_list) # stack the list into a tensor
+        update_indices = tf.cast(tf.stack(update_indices_list), tf.int32) # stack the list into a tensor
 
         neg_inf = tf.cast(tf.fill(len(update_indices_list), -10000000), dtype=logits.dtype)
 
@@ -98,9 +98,9 @@ class TextSampler:
 
         # TODO: Map filtered logits back to original indices and sample
 
-        update_indices = tf.stack(update_indices_list) # stack the list into a tensor
+        update_indices = tf.cast(tf.stack(update_indices_list), tf.int32) # stack the list into a tensor
 
-        neg_inf = tf.cast(tf.fill(len(update_indices_list), -10000000), dtype=tf.float32)
+        neg_inf = tf.cast(tf.fill(len(update_indices_list), -10000000), dtype=logits.dtype)
 
         filtered_logits = tf.tensor_scatter_nd_update(scaled_logits, update_indices, neg_inf) # at all indices, set the logit to -inf
 
