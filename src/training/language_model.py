@@ -26,6 +26,7 @@ class TextSampler:
         # TODO: Apply temperature scaling
         if temperature <= 0:
             raise ValueError("Temperature must be positive.")
+        
         scaled_logits = logits / temperature
 
         # TODO: Limit to top-k from the logits using tf.nn.top_k
@@ -47,7 +48,7 @@ class TextSampler:
 
         update_indices = tf.stack(update_indices_list) # stack the list into a tensor
 
-        neg_inf = tf.cast(tf.fill(len(update_indices_list), -10000000), dtype=tf.float32)
+        neg_inf = tf.cast(tf.fill(len(update_indices_list), -10000000), dtype=logits.dtype)
 
         filtered_logits = tf.tensor_scatter_nd_update(scaled_logits, update_indices, neg_inf) # at all indices, set the logit to -inf
 
