@@ -40,6 +40,7 @@ class TextSampler:
 
         # scaled_logits is of shape [batch_size, vocab_size]. For each batch, we need to set all logits less than the value of the relevant batch 
         # index in min_top_ks to neg_inf.
+
         update_indices_list = []
         for i in range(scaled_logits.shape[0]): # iterate over batch_size of scaled_logits
             for j in range(scaled_logits.shape[1]): # iterate over vocab_size of scaled_logits
@@ -47,10 +48,11 @@ class TextSampler:
                     update_indices_list.append(tf.constant([i,j], dtype=tf.int32)) # add the indices of the logit in scaled_logits to a list
 
         update_indices = tf.cast(tf.stack(update_indices_list), tf.int32) # stack the list into a tensor
-
         neg_inf = tf.cast(tf.fill(len(update_indices_list), -10000000), dtype=logits.dtype)
-
-        filtered_logits = tf.tensor_scatter_nd_update(scaled_logits, update_indices, neg_inf) # at all indices, set the logit to -inf
+        if len(update_indices_list) == 0:
+            filtered_logits = scaled_logits
+        else:
+            filtered_logits = tf.tensor_scatter_nd_update(scaled_logits, update_indices, neg_inf) # at all indices, set the logit to -inf
 
         # TODO: Sample from the filtered distribution
         return tf.random.categorical(filtered_logits, num_samples=1)
@@ -102,7 +104,10 @@ class TextSampler:
 
         neg_inf = tf.cast(tf.fill(len(update_indices_list), -10000000), dtype=logits.dtype)
 
-        filtered_logits = tf.tensor_scatter_nd_update(scaled_logits, update_indices, neg_inf) # at all indices, set the logit to -inf
+        if len(update_indices_list) == 0:
+            filtered_logits = scaled_logits
+        else:
+            filtered_logits = tf.tensor_scatter_nd_update(scaled_logits, update_indices, neg_inf) # at all indices, set the logit to -inf
 
         return tf.random.categorical(filtered_logits, num_samples=1)
 
