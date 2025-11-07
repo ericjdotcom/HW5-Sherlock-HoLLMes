@@ -1,12 +1,12 @@
 {
   "metadata": {
-    "timestamp": "20251107_071603",
+    "timestamp": "20251107_154053",
     "model_type": "vanilla_rnn",
     "submission_version": "3.0",
-    "total_training_time_seconds": 785.6432199478149,
-    "chain_seed": "b0d3b75f246065d1d0db18afa612647f5ae357da49e393e724c1e36888a01c52",
-    "final_hash": "c4b1a7a19d6ca17eec63f13e3d579dd6f4341b708ae5ad14b2252fb15d048b45",
-    "weights_hash": "2d354343e38081fb2a4fc9f1196253de221fc57cf7f306b517d15d7f27b7c7ce"
+    "total_training_time_seconds": 761.8884689807892,
+    "chain_seed": "b93ea84067bd8b111922b65065eb784bad7a1dba3e2cde47f2f5babe2f412e6c",
+    "final_hash": "ca94c8f62011554f07cd9c252084677d3251a4f09d8b73cf15943e51668f89a2",
+    "weights_hash": "8e90f319c8a5cccb1df8020594a14e75dfddd7137eb89410966c0fd893f822cd"
   },
   "model_params": {
     "vocab_size": 3000,
@@ -19,9 +19,9 @@
     "epochs": 2
   },
   "final_metrics": {
-    "train_loss": 5.523301601409912,
-    "val_loss": 5.64375114440918,
-    "perplexity": 282.5205084992944
+    "train_loss": 3.8775370121002197,
+    "val_loss": 4.144235610961914,
+    "perplexity": 63.0693939182725
   },
   "training_history": {
     "epochs": [
@@ -29,32 +29,32 @@
       2
     ],
     "train_loss": [
-      5.564377307891846,
-      5.523301601409912
+      4.408916473388672,
+      3.8775370121002197
     ],
     "val_loss": [
-      5.629463195800781,
-      5.64375114440918
+      4.263920783996582,
+      4.144235610961914
     ],
     "perplexity": [
-      278.5125707804117,
-      282.5205084992944
+      71.08815908111974,
+      63.0693939182725
     ],
     "logged_at": [
-      "2025-11-07T07:22:29.999501",
-      "2025-11-07T07:29:11.830709"
+      "2025-11-07T15:47:37.364702",
+      "2025-11-07T15:54:01.180508"
     ],
     "elapsed_time": [
-      383.1824059486389,
-      785.0139129161835
+      377.3547682762146,
+      761.1705842018127
     ],
     "epoch_hashes": [
-      "b492ced2d7fd90f0aff98439d2a4113eaea94df8501c01d7b1a8d04c5814d3be",
-      "c4b1a7a19d6ca17eec63f13e3d579dd6f4341b708ae5ad14b2252fb15d048b45"
+      "e79e926deb20faa3a22c10d4cd45d5b75e03f1233c57812b90783dad5ec66025",
+      "ca94c8f62011554f07cd9c252084677d3251a4f09d8b73cf15943e51668f89a2"
     ],
     "previous_hashes": [
-      "b0d3b75f246065d1d0db18afa612647f5ae357da49e393e724c1e36888a01c52",
-      "b492ced2d7fd90f0aff98439d2a4113eaea94df8501c01d7b1a8d04c5814d3be"
+      "b93ea84067bd8b111922b65065eb784bad7a1dba3e2cde47f2f5babe2f412e6c",
+      "e79e926deb20faa3a22c10d4cd45d5b75e03f1233c57812b90783dad5ec66025"
     ]
   }
 }
